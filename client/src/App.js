@@ -3,7 +3,6 @@ import logo from './logo.svg';
 import React, { useState } from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import './App.css';
-import {useState} from 'react';
 import MyGraph from './pages/MyGraph'
 
 function App() {

@@ -1,5 +1,16 @@
 {
   "dependencies": {
-    "react-sigma": "^1.2.35"
+    "axios": "^1.2.2",
+    "concurrently": "^7.6.0",
+    "react-router-dom": "^6.6.2",
+    "react-scripts": "^5.0.1",
+    "react-sigma": "^1.2.35",
+    "web-vitals": "^3.1.1"
+  },
+  "scripts": {
+    "dev": "cd server && nodemon app.js",
+    "client": "cd client && npm start",
+    "start": "concurrently \"npm run dev\" \"npm run client\"",
+    "test": "jest"
   }
 }
