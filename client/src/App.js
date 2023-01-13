@@ -3,7 +3,26 @@ import logo from './logo.svg';
 import React, { useState } from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import './App.css';
-import MyGraph from './pages/MyGraph'
+import { useEffect } from "react";
+import Graph from "graphology";
+import { SigmaContainer, useLoadGraph } from "@react-sigma/core";
+import "@react-sigma/core/lib/react-sigma.min.css";
+import getNodeProgramImage from "sigma/rendering/webgl/programs/node.image";
+import {ControlsContainer, ZoomControl, FullScreenControl, SearchControl } from "@react-sigma/core";
+import { LayoutForceAtlas2Control } from "@react-sigma/layout-forceatlas2";
+import jsonGraph from "./test.json";
+
+export const LoadGraph = () => {
+  const loadGraph = useLoadGraph();
+
+  useEffect(() => {
+    const graph = new Graph();
+    graph.addNode("first", { x: 0, y: 0, size: 15, label: "Leonardo DiCaprio", color: "#FA4F40" });
+    loadGraph(graph);
+  }, [loadGraph]);
+
+  return null;
+};
 
 function App() {
   const [movieData, setData] = useState([]);
@@ -33,6 +52,7 @@ function App() {
     }
   };
 
+  const graph = Graph.from(jsonGraph);
 
   return (
     <div>
@@ -44,6 +64,33 @@ function App() {
       <div>
         <p>{movieData}</p>
       </div>
+
+      <SigmaContainer
+        graph={graph}
+        style={{ height: "600px" }}
+        settings={{
+          nodeProgramClasses: { image: getNodeProgramImage() },
+          defaultNodeType: "image",
+          defaultEdgeType: "line",
+          labelDensity: 0.07,
+          labelGridCellSize: 60,
+          labelRenderedSizeThreshold: 15,
+          labelFont: "Lato, sans-serif",
+          zIndex: true,
+          
+        }}
+      >
+        <ControlsContainer position={"bottom-right"}>
+          <ZoomControl />
+          <FullScreenControl />
+          <LayoutForceAtlas2Control />
+        </ControlsContainer>
+        <ControlsContainer position={"top-right"}>
+          <SearchControl style={{ width: "200px" }} />
+        </ControlsContainer>
+      </SigmaContainer>
+
+        
     </div>
   );
 }
