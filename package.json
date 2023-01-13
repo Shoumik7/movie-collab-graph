@@ -1,10 +1,20 @@
 {
   "dependencies": {
+    "@react-sigma/core": "^3.1.0",
+    "@react-sigma/layout-forceatlas2": "^3.1.0",
     "axios": "^1.2.2",
     "concurrently": "^7.6.0",
+    "cors": "^2.8.5",
+    "graphology": "^0.25.1",
+    "graphology-gexf": "^0.10.3",
+    "graphology-types": "^0.24.7",
+    "i": "^0.3.7",
+    "lodash": "^4.17.21",
+    "npm": "^9.3.0",
     "react-router-dom": "^6.6.2",
     "react-scripts": "^5.0.1",
     "react-sigma": "^1.2.35",
+    "sigma": "^2.4.0",
     "web-vitals": "^3.1.1"
   },
   "scripts": {
