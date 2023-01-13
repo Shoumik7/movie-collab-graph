@@ -1,7 +1,7 @@
 import {Sigma, RandomizeNodePositions, RelativeSize} from 'react-sigma';
 
 
-function MyGraph(){
+function MyGraph(props){
 
     let myGraph = {nodes:[{id:"n1", label:"Alice"}, {id:"n2", label:"Rabbit"}], edges:[{id:"e1",source:"n1",target:"n2",label:"SEES"}]};
 
