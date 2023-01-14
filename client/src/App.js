@@ -17,6 +17,7 @@ import { parse } from "graphology-gexf/browser";
 import { useRegisterEvents, useSetSettings, useSigma } from "@react-sigma/core";
 import { FC } from "react";
 
+
 export const LoadGraph = () => {
   const loadGraph = useLoadGraph();
 
@@ -31,6 +32,9 @@ export const LoadGraph = () => {
 };
 
 function App() {
+
+  localStorage.setItem('clickedNode', null)
+
   const [movieData, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState('');
@@ -84,7 +88,7 @@ function App() {
   const [selectedNode, setSelectedNode] = useState("");
   const [hoveredNeighbors, setHoveredNeighbors] = useState([]);
 
-  const GraphEvents = () => {
+  const GraphEvents =  () => {
     const sigma = useSigma();
     const registerEvents = useRegisterEvents();
     const loadGraph = useLoadGraph();
@@ -93,16 +97,80 @@ function App() {
     const [secondHoveredNode, setSecondHoveredNode] = useState(null);
     const [clickedNode, setClickedNode] = useState(null);
 
-
     useEffect(() => {
-  
       // Register the events
       registerEvents({
-        enterNode: event => setHoveredNode(event.node),
-        leaveNode: event => {if(event.node !== clickedNode) setHoveredNode(null)},
-        clickNode: event => {console.log(event.node); setClickedNode(event.node)}
+        enterNode: event => {
+          if(localStorage.getItem('clickedNode') !== 'null'){
+            if(event.node !== localStorage.getItem('clickedNode')){
+              setSecondHoveredNode(event.node)
+            }
+          } 
+          else{
+              setHoveredNode(event.node)
+          }
+        },
+        leaveNode: event => {
+          if(localStorage.getItem('clickedNode') !== 'null'){
+              //setHoveredNode(null);
+              setHoveredNode(localStorage.getItem('clickedNode'))
+              //;
+
+            //localStorage.getItem('clickedNode') === event.node ? setHoveredNode(event.node) : setHoveredNode(null)
+          }else{
+            setHoveredNode(null);
+            
+          } 
+
+          
+        },
+        clickNode: event => {
+          if(localStorage.getItem('clickedNode') === event.node){
+            setClickedNode(null);
+            setHoveredNode(null);
+            localStorage.setItem('clickedNode', null)
+          }
+          else{
+            console.log(event.node); setClickedNode(event.node); localStorage.setItem('clickedNode', event.node);
+          }
+        },
+        clickStage: event => {
+            setHoveredNode(null)
+            localStorage.setItem('clickedNode', null)
+        }
       });
     }, [registerEvents]);
+
+    useEffect(() => {
+        setSettings({
+          nodeReducer: (node, data) => {
+            const graph = sigma.getGraph();
+            const newData = { ...data, highlighted: data.highlighted || false };
+    
+            if (secondHoveredNode) {
+                //console.log(secondHoveredNode)
+                if(localStorage.getItem('clickedNode') !== 'null'){
+
+                  if(secondHoveredNode ){
+                    
+                      if (node === secondHoveredNode || node === localStorage.getItem('clickedNode') || graph.neighbors(hoveredNode).includes(node)) {
+                        newData.highlighted = true;
+                      } else {
+                      }
+                  }
+                   
+                }
+              
+            }
+            return newData;
+          },
+          
+        });
+    }, [secondHoveredNode])
+
+    useLayoutEffect(() => {
+      
+  }, [clickedNode])
   
     useEffect(() => {
       setSettings({
