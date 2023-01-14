@@ -90,13 +90,17 @@ function App() {
     const loadGraph = useLoadGraph();
     const setSettings = useSetSettings();
     const [hoveredNode, setHoveredNode] = useState(null);
+    const [secondHoveredNode, setSecondHoveredNode] = useState(null);
+    const [clickedNode, setClickedNode] = useState(null);
+
 
     useEffect(() => {
   
       // Register the events
       registerEvents({
         enterNode: event => setHoveredNode(event.node),
-        leaveNode: () => setHoveredNode(null),
+        leaveNode: event => {if(event.node !== clickedNode) setHoveredNode(null)},
+        clickNode: event => {console.log(event.node); setClickedNode(event.node)}
       });
     }, [registerEvents]);
   
