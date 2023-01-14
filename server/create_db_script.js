@@ -14,6 +14,7 @@ let topMovieIds = [];
 
     function getTopRatedMovieId(url, index) {
       return axios.get(url).then((resp) => {
+      if(resp.data.results[index].id != undefined)
         topMovieIds.push(resp.data.results[index].id);
         return resp.data.results[index].id;
       });
@@ -28,36 +29,53 @@ let topMovieIds = [];
 
     function getCastFromMovie(url){
         return axios.get(url).then((resp) => {
-            if(resp.data.cast[0] != undefined && resp.data.cast[0].name != null)
-                
-                console.log(resp.data.cast)
-                return resp.data.cast;
+            if(resp.data.cast != undefined && resp.data.cast != null)
+                //console.log("cast:") 
+                //console.log(JSON.stringify(resp.data.cast))
+                return JSON.stringify(resp.data.cast);
+        });
+    }
+
+    function getMovieTitle(url){
+        return axios.get(url).then((resp) => {
+            //console.log(resp.data)
+            if(resp.data.title != undefined && resp.data.title != null)
+                //console.log("cast:") 
+                //console.log(JSON.stringify(resp.data.cast))
+                return resp.data.title;
         });
     }
 
     //Get the lead actors of the top 1000 movies
-    for(let i = 1; i <= 2; i++){
+    for(let i = 1; i <= 50; i++){
         for(let j = 0; j <= 19; j++){
             currMovieId = await getTopRatedMovieId("https://api.themoviedb.org/3/movie/top_rated?api_key=" + apiKey + "&language=en-US&page=" + i, j);
             //console.log(currMovieId);
-
-            currTopActor = await getTopActorFromMovie("https://api.themoviedb.org/3/movie/" + currMovieId + "/credits?api_key=" + apiKey + "&language=en-US");
-
-            allActors.push(currTopActor);
+            
+            if(currMovieId != null && currMovieId != undefined){
+                currTopActor = await getTopActorFromMovie("https://api.themoviedb.org/3/movie/" + currMovieId + "/credits?api_key=" + apiKey + "&language=en-US");
+                allActors.push(currTopActor);
+            }
         }
     }
 
-    let uniqueActors = [];
+    function getUniqueActors(){
+        let uniqueActors = [];
 
-    allActors.forEach(actor => {
-        if (!uniqueActors.includes(actor) && actor != null) {
-            uniqueActors.push(actor);
-            console.log(actor)
-        }
-    });
+        allActors.forEach(actor => {
+            if (!uniqueActors.includes(actor) && actor != null) {
+                uniqueActors.push(actor);
+                //console.log(actor)
+            }
+        });
 
-    console.log(allActors.length)
-    console.log(uniqueActors.length)
+        return uniqueActors;
+    }
+
+    let uniqueActors = getUniqueActors();
+    
+    console.log("allActors.length: " + allActors.length)
+    console.log("uniqueActors.length" + uniqueActors.length)
 
     const jsonContent = JSON.stringify(uniqueActors);
 
@@ -69,23 +87,58 @@ let topMovieIds = [];
         console.log("The file was saved!");
     }); 
 
+    
     //Determine if two of the actors have collaborated on a top movie => if they have then add an array containing the two actors' names to a larger existing array
-    let movieCollabPairs = [];
-    let movieCollabGroups = [];
+    let movieCollabGroups = {};
     let currCastFromMovie;
+    let currTopActorsInMovie = [];
+    //let currmovieCollabGroup = [];
+
 
     //Find who collaborated from chosen actors in these top movies
-    for(let i = 1; i <= topMovieIds; i++){
-        currCastFromMovie = await getCastFromMovie("https://api.themoviedb.org/3/movie/" + currMovieId + "/credits?api_key=" + apiKey + "&language=en-US");
+    
+    for(let i = 0; i < topMovieIds.length; i++){
+        currCastFromMovie = await getCastFromMovie("https://api.themoviedb.org/3/movie/" + topMovieIds[i] + "/credits?api_key=" + apiKey + "&language=en-US");
+        currTopActorsInMovie = [];
+
+        for(let j = 0; j <= uniqueActors.length; j++){
+            if (currCastFromMovie.includes(uniqueActors[j])){
+                currTopActorsInMovie.push(uniqueActors[j]);
+                //console.log("includes: " + uniqueActors[j]);
+
+            }
+        }
+
+        if (currTopActorsInMovie.length > 1){
+            let currMovieTitle = await getMovieTitle("https://api.themoviedb.org/3/movie/" + topMovieIds[i] + "?api_key=" + apiKey + "&language=en-US");
+
+            https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US
+            movieCollabGroups[currMovieTitle] = currTopActorsInMovie;
+        }
+
+        console.log(i + " movie collab analyzation complete");
 
     }
+
+    console.log(JSON.stringify(movieCollabGroups));
+
+    const movieCollabGroupsJsonContent = JSON.stringify(movieCollabGroups);
+
+    fs.writeFile("./movieCollabGroups.json", movieCollabGroupsJsonContent, 'utf8', function (err) {
+        if (err) {
+            return console.log(err);
+        }
+
+        console.log("The file was saved!");
+    }); 
+
+    //for(let i = 0; i < movieCollabGroups.length; i++){
+    //    console.log(JSON.stringify(movieCollabGroups[i]))
+    //}
 
     /*
     for(let i = 0; i < uniqueActors.length; i++){
         for(let j = i + 1; j < uniqueActors.length; j++){
-
-
-            
             
             const searchString = uniqueActors[i] + " and " + uniqueActors[j] + " movies";
             const encodedString = encodeURI(searchString);
@@ -130,16 +183,11 @@ let topMovieIds = [];
     }
     */
 
+    /*
     movieCollabPairs.forEach(pair => {
         console.log(pair[0] + ' ' + pair[1]);
     });
-
-
-
-
-
-
-
+    */
 
 
 })();
