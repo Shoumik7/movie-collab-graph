@@ -14,7 +14,7 @@ import testJson from "./test.json";
 import testJsonGraphFromGexf from "./testoutput.json";
 import newTestJson from "./newTestJson.json";
 import { parse } from "graphology-gexf/browser";
-import { useRegisterEvents, useSetSettings } from "@react-sigma/core";
+import { useRegisterEvents, useSetSettings, useSigma } from "@react-sigma/core";
 import { FC } from "react";
 
 export const LoadGraph = () => {
@@ -85,26 +85,49 @@ function App() {
   const [hoveredNeighbors, setHoveredNeighbors] = useState([]);
 
   const GraphEvents = () => {
+    const sigma = useSigma();
     const registerEvents = useRegisterEvents();
+    const loadGraph = useLoadGraph();
     const setSettings = useSetSettings();
-
-    const state = {
-      hoveredNode: "",
-      selectedNode: "",
-      hoveredNeighbors: []
-    }
+    const [hoveredNode, setHoveredNode] = useState(null);
 
     useEffect(() => {
+  
       // Register the events
       registerEvents({
-        // node events
-        //clickNode: (event) => console.log("clickNode", event.event, event.node, event.preventSigmaDefault),
-        //enterNode: (event) => {console.log("enterNode", event.node); setHoveredNode(event.node)},
-        enterNode: (event) => {console.log("enterNode", event.node);},
-        leaveNode: (event) => {console.log("leaveNode", event.node);},
+        enterNode: event => setHoveredNode(event.node),
+        leaveNode: () => setHoveredNode(null),
       });
     }, [registerEvents]);
-
+  
+    useEffect(() => {
+      setSettings({
+        nodeReducer: (node, data) => {
+          const graph = sigma.getGraph();
+          const newData = { ...data, highlighted: data.highlighted || false };
+  
+          if (hoveredNode) {
+            if (node === hoveredNode || graph.neighbors(hoveredNode).includes(node)) {
+              newData.highlighted = true;
+            } else {
+              newData.color = "#E2E2E2";
+              newData.highlighted = false;
+            }
+          }
+          return newData;
+        },
+        edgeReducer: (edge, data) => {
+          const graph = sigma.getGraph();
+          const newData = { ...data, hidden: false };
+  
+          if (hoveredNode && !graph.extremities(edge).includes(hoveredNode)) {
+            newData.hidden = true;
+          }
+          return newData;
+        },
+      });
+    }, [hoveredNode]);
+  
     return null;
   }
 
