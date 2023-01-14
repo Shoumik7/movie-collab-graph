@@ -72,7 +72,7 @@ function App() {
   const [err, setErr] = useState('');
   const [addedCollab, setAddedCollab] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
-  const movieArr = ["Sai Sompally", "Danial Khan", "Neal Shah", "Advait Gosai"]
+  let [movieArr, setMovieArr] = useState([]);
   const movieItems = movieArr.map((movie) =>
     <li key={movie.toString()}>
       {movie}
@@ -205,7 +205,6 @@ function App() {
     }, [secondHoveredNode])
 
     useLayoutEffect(() => {
-      
   }, [clickedNode])
   
     useEffect(() => {
@@ -236,20 +235,32 @@ function App() {
       });
     }, [hoveredNode]);
 
+    let movieCollabGroups = require('./movieCollabGroups.json');
+    //movieCollabGroups = JSON.parse(movieCollabGroups);
+
+    console.log(movieCollabGroups)
+
+
+
     useEffect(() => {
       if(localStorage.getItem('clickedNode') !== 'null' && localStorage.getItem('secondHoveredNode') !== 'null'){
         console.log("testing collab");
         console.log(localStorage.getItem('clickedNode'));
         console.log(localStorage.getItem('secondHoveredNode'));
   
-  
+        let counter = 0;
         for (let key in movieCollabGroups) {
-          //console.log(key + ' has ' + movieCollabGroups[key])
+          console.log(key + ' has ' + movieCollabGroups[key])
           //console.log(localStorage.getItem('clickedNode'));
           //console.log(localStorage.getItem('secondHoveredNode'));
+          
+          console.log(counter);
+          counter++;
       
           if(movieCollabGroups[key].includes(localStorage.getItem('clickedNode')) && movieCollabGroups[key].includes(localStorage.getItem('secondHoveredNode'))){
+              console.log("done");
               console.log(key);
+              //movieArr.push(key);
           }
         }
       }
@@ -258,8 +269,6 @@ function App() {
     return null;
   }
 
-  let movieCollabGroups = require('./movieCollabGroups.json');
-  //movieCollabGroups = JSON.parse(movieCollabGroups);
 
   //console.log(movieCollabGroups);
 
