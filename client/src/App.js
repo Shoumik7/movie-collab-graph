@@ -247,7 +247,7 @@ function App() {
           nodeProgramClasses: { image: getNodeProgramImage() },
           defaultNodeType: "image",
           defaultEdgeType: "line",
-          labelDensity: 0.07,
+          labelDensity: 0.01,
           labelGridCellSize: 60,
           labelRenderedSizeThreshold: 20,
           labelFont: "Lato, sans-serif",

@@ -11,6 +11,7 @@ let topMovieIds = [];
 
 (async () => {
     let currMovieId;
+    let currMovieActorId;
 
     function getTopRatedMovieId(url, index) {
       return axios.get(url).then((resp) => {
@@ -20,10 +21,13 @@ let topMovieIds = [];
       });
     }
 
-    function getTopActorFromMovie(url){
+    function getTopActorFromMovie(url, index){
         return axios.get(url).then((resp) => {
-            if(resp.data.cast[0] != undefined && resp.data.cast[0].name != null)
-                return resp.data.cast[0].name;
+            if(resp.data.cast[index] != undefined && resp.data.cast[index].name != null){
+                //filter popularity to improve levels of collaboration
+                currMovieActorId = resp.data.cast[index].id;
+                return resp.data.cast[index].name;
+            }
         });
     }
 
@@ -46,16 +50,39 @@ let topMovieIds = [];
         });
     }
 
-    //Get the lead actors of the top 1000 movies
+    function getPopularity(url){
+        return axios.get(url).then((resp) => {
+            //console.log(resp.data)
+            //if(resp.data.title != undefined && resp.data.title != null)
+                //console.log("cast:") 
+                //console.log(JSON.stringify(resp.data.cast))
+                return resp.data.popularity;
+        });
+    }
+
+    //Ways to improve graph:
+    //Get more movies
+    //Get more people per movie
+    //Popularity filter for people
+
+    //Get the lead actors of the top x movies
     for(let i = 1; i <= 50; i++){
         for(let j = 0; j <= 19; j++){
             currMovieId = await getTopRatedMovieId("https://api.themoviedb.org/3/movie/top_rated?api_key=" + apiKey + "&language=en-US&page=" + i, j);
-            //console.log(currMovieId);
+            console.log(currMovieId);
             
             if(currMovieId != null && currMovieId != undefined){
-                currTopActor = await getTopActorFromMovie("https://api.themoviedb.org/3/movie/" + currMovieId + "/credits?api_key=" + apiKey + "&language=en-US");
-                allActors.push(currTopActor);
+                for(let k = 0; k < 2; k++){
+                    currTopActor = await getTopActorFromMovie("https://api.themoviedb.org/3/movie/" + currMovieId + "/credits?api_key=" + apiKey + "&language=en-US", k);
+                }
             }
+
+            let popularity = await getPopularity("https://api.themoviedb.org/3/person/" + currMovieActorId + "?api_key=" + apiKey + "&language=en-US");
+            
+            if(popularity > 10){
+                allActors.push(currTopActor);
+            }  
+
         }
     }
 
