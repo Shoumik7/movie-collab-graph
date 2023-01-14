@@ -8,14 +8,44 @@ import Graph from "graphology";
 import { SigmaContainer, useLoadGraph } from "@react-sigma/core";
 import "@react-sigma/core/lib/react-sigma.min.css";
 import getNodeProgramImage from "sigma/rendering/webgl/programs/node.image";
-import {ControlsContainer, ZoomControl, FullScreenControl, SearchControl } from "@react-sigma/core";
+import {ControlsContainer, ZoomControl, FullScreenControl, SearchControl, useSetSettings, useSigma, useRegisterEvents } from "@react-sigma/core";
 import { LayoutForceAtlas2Control } from "@react-sigma/layout-forceatlas2";
 import testJson from "./test.json";
 import testJsonGraphFromGexf from "./testoutput.json";
 import newTestJson from "./newTestJson.json";
 import { parse } from "graphology-gexf/browser";
-import { useRegisterEvents, useSetSettings, useSigma } from "@react-sigma/core";
 import { FC } from "react";
+import { styled } from '@mui/material/styles';
+import Button, { ButtonProps } from '@mui/material/Button';
+import { Drawer, Box } from '@mui/material';
+
+
+
+const BootstrapButton = styled(Button)({
+  boxShadow: 'none',
+  textTransform: 'none',
+  fontSize: 16,
+  padding: '6px 12px',
+  border: '1px solid',
+  borderRadius: '138in',
+  lineHeight: 1.5,
+  backgroundColor: '#0063cc',
+  borderColor: '#0063cc',
+  fontFamily: [
+    '-apple-system',
+    'BlinkMacSystemFont',
+    '"Segoe UI"',
+    'Roboto',
+    '"Helvetica Neue"',
+    'Arial',
+    'sans-serif',
+    '"Apple Color Emoji"',
+    '"Segoe UI Emoji"',
+    '"Segoe UI Symbol"',
+  ]
+})
+
+
 
 
 export const LoadGraph = () => {
@@ -36,9 +66,18 @@ function App() {
   localStorage.setItem('clickedNode', null)
   localStorage.setItem('secondHoveredNode', null)
 
+  //movieArr is here
   const [movieData, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState('');
+  const [addedCollab, setAddedCollab] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(true);
+  const movieArr = ["Sai Sompally", "Danial Khan", "Neal Shah", "Advait Gosai"]
+  const movieItems = movieArr.map((movie) =>
+    <li key={movie.toString()}>
+      {movie}
+    </li>
+  );
 
   const handleClick = async () => {
     setIsLoading(true);
@@ -106,7 +145,6 @@ function App() {
             if(event.node !== localStorage.getItem('clickedNode')){
               localStorage.setItem('secondHoveredNode', event.node)
               setSecondHoveredNode(event.node)
-
             }
           } 
           else{
@@ -225,21 +263,107 @@ function App() {
 
   //console.log(movieCollabGroups);
 
-  
+  const SearchBar = () => {
 
-  
+    //const { gotoNode } = useCamera();
+    // Search value
+    const [search, setSearch] = useState("");
+    // Datalist values
+    const [values, setValues] = useState([ {} ]);
+    // Selected
+    const [selected, setSelected] = useState(null);
+    // random id for the input
+    const [inputId, setInputId] = useState("");
+
+  /**
+   * When component mount, we set a random input id.
+   */
+  useEffect(() => {
+    setInputId(`search-${0}`);
+  }, []);
+
+  /**
+   * When the search input changes, recompute the autocomplete values.
+   */
+  useEffect(() => {
+    const newValues = [];
+    if (!selected && search.length > 1) {
+      graph.forEachNode((key, attributes) => {
+        if (attributes.label && attributes.label.toLowerCase().includes(search.toLowerCase()))
+          newValues.push({ id: key, label: attributes.label });
+      });
+    }
+    setValues(newValues);
+  }, [search]);
+
+
+  /**
+   * When the selected item changes, highlighted the node and center the camera on it.
+   */
+  useEffect(() => {
+    if (!selected) {
+      return;
+    }
+
+    graph.setNodeAttribute(selected, "highlighted", true);
+    //gotoNode(selected);
+
+    return () => {
+      graph.setNodeAttribute(selected, "highlighted", false);
+    };
+  }, [selected]);
+
+  /**
+   * On change event handler for the search input, to set the state.
+   */
+  const onInputChange = (e) => {
+    const searchString = e.target.value;
+    const valueItem = values.find((value) => value.label === searchString);
+    if (valueItem) {
+      setSearch(valueItem.label);
+      setValues([]);
+      setSelected(valueItem.id);
+    } else {
+      setSelected(null);
+      setSearch(searchString);
+    }
+  };
+
+  const isOpen = true
+  const toggle = false
+
+  // Common html props for the div
 
   return (
-    <div>
-      <div>
-        {err && <h2>{err}</h2>}
-        <button onClick={handleClick}>Fetch data</button>
-        {isLoading && <h2>Loading...</h2>}
+    <div style={{ width: "200px"}}>
+      <label htmlFor={inputId} style={{ display: "none" }}>
+          Search a node
+        </label>
+        <input
+          id={inputId}
+          type="text"
+          placeholder="Search for actors and directors..."
+          list={`${inputId}-datalist`}
+          value={search}
+          onChange={onInputChange}
+          style={{width: "190px"}}
+        />
+        <datalist id={`${inputId}-datalist`}>
+          {values.map((value) => (
+            <option key={value.id} value={value.label}>
+              {value.label}
+            </option>
+          ))}
+        </datalist>
       </div>
-      <div>
-        <p>{movieData}</p>
-      </div>
+    );
+  };
 
+
+
+
+  return (
+      <div>
       <SigmaContainer
         graph={graph}
         style={{ height: "750px" }}
@@ -262,14 +386,30 @@ function App() {
           <FullScreenControl />
           <LayoutForceAtlas2Control />
         </ControlsContainer>
-        <ControlsContainer position={"top-left"}>
-          <SearchControl style={{ width: "350px" }} />
+        <ControlsContainer style={{ marginLeft: "10px", marginTop: "10px"}} position={"top-left"}>
+          <SearchBar />
+        </ControlsContainer>
+        <ControlsContainer style={{ marginLeft: "10px", marginTop: "55px"}} position={"top-left"}>
+          <SearchBar />
+        </ControlsContainer>
+        <ControlsContainer style={{ border: "0px", marginLeft: "130px", marginTop: "95px"}} position={"top-left"}>
+          
         </ControlsContainer>
 
-      </SigmaContainer>
-
         
-    </div>
+      </SigmaContainer>  
+      <Drawer variant="permanent" hideBackdrop anchor = 'right' open>
+        <Box
+          sx={{ width: 400 }}
+          role="presentation"   
+        >
+          <ul>
+            {showWelcome && <h1 margin="10px">Welcome to Movie Collabs!</h1> }
+            {movieItems}
+          </ul>
+        </Box>
+      </Drawer>
+      </div>
   );
 }
 
