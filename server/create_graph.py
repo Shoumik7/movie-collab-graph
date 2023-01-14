@@ -17,10 +17,12 @@ collab_groups = json.load(g)
 print(collab_groups)
 
 G = nx.Graph()
-G.add_nodes_from(actors)
+#G.add_nodes_from(actors)
 
 for key in collab_groups:
     nodes = collab_groups[key]
+    G.add_nodes_from(actors)
+
     edges = combinations(nodes, 2)
     G.add_edges_from(edges)
 
