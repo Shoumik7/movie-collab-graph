@@ -14,7 +14,7 @@ import testJson from "./test.json";
 import testJsonGraphFromGexf from "./testoutput.json";
 import newTestJson from "./newTestJson.json";
 import { parse } from "graphology-gexf/browser";
-import { useRegisterEvents } from "@react-sigma/core";
+import { useRegisterEvents, useSetSettings } from "@react-sigma/core";
 import { FC } from "react";
 
 export const LoadGraph = () => {
@@ -86,6 +86,13 @@ function App() {
 
   const GraphEvents = () => {
     const registerEvents = useRegisterEvents();
+    const setSettings = useSetSettings();
+
+    const state = {
+      hoveredNode: "",
+      selectedNode: "",
+      hoveredNeighbors: []
+    }
 
     useEffect(() => {
       // Register the events
@@ -93,15 +100,13 @@ function App() {
         // node events
         //clickNode: (event) => console.log("clickNode", event.event, event.node, event.preventSigmaDefault),
         //enterNode: (event) => {console.log("enterNode", event.node); setHoveredNode(event.node)},
-        enterNode: (event) => {console.log("enterNode", event.node)}
-        //leaveNode: (event) => console.log("leaveNode", event.node),
+        enterNode: (event) => {console.log("enterNode", event.node);},
+        leaveNode: (event) => {console.log("leaveNode", event.node);},
       });
     }, [registerEvents]);
 
     return null;
-  };
-
-  
+  }
 
 
   return (
@@ -117,7 +122,7 @@ function App() {
 
       <SigmaContainer
         graph={graph}
-        style={{ height: "600px" }}
+        style={{ height: "750px" }}
         settings={{
           nodeProgramClasses: { image: getNodeProgramImage() },
           defaultNodeType: "image",
@@ -141,7 +146,6 @@ function App() {
           <SearchControl style={{ width: "350px" }} />
         </ControlsContainer>
 
-        
       </SigmaContainer>
 
         
