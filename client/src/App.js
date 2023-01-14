@@ -34,6 +34,7 @@ export const LoadGraph = () => {
 function App() {
 
   localStorage.setItem('clickedNode', null)
+  localStorage.setItem('secondHoveredNode', null)
 
   const [movieData, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -103,7 +104,9 @@ function App() {
         enterNode: event => {
           if(localStorage.getItem('clickedNode') !== 'null'){
             if(event.node !== localStorage.getItem('clickedNode')){
+              localStorage.setItem('secondHoveredNode', event.node)
               setSecondHoveredNode(event.node)
+
             }
           } 
           else{
@@ -113,21 +116,20 @@ function App() {
         leaveNode: event => {
           if(localStorage.getItem('clickedNode') !== 'null'){
               //setHoveredNode(null);
-              setHoveredNode(localStorage.getItem('clickedNode'))
-              //;
-
+              setHoveredNode(localStorage.getItem('clickedNode'));
+              
             //localStorage.getItem('clickedNode') === event.node ? setHoveredNode(event.node) : setHoveredNode(null)
           }else{
             setHoveredNode(null);
-            
+            localStorage.setItem('secondHoveredNode', null)
           } 
-
           
         },
         clickNode: event => {
           if(localStorage.getItem('clickedNode') === event.node){
             setClickedNode(null);
             setHoveredNode(null);
+            localStorage.setItem('secondHoveredNode', null)
             localStorage.setItem('clickedNode', null)
           }
           else{
@@ -135,8 +137,9 @@ function App() {
           }
         },
         clickStage: event => {
-            setHoveredNode(null)
-            localStorage.setItem('clickedNode', null)
+            setHoveredNode(null);
+            localStorage.setItem('secondHoveredNode', null);
+            localStorage.setItem('clickedNode', null);
         }
       });
     }, [registerEvents]);
@@ -150,21 +153,16 @@ function App() {
             if (secondHoveredNode) {
                 //console.log(secondHoveredNode)
                 if(localStorage.getItem('clickedNode') !== 'null'){
-
-                  if(secondHoveredNode ){
-                    
+                  if(secondHoveredNode ){                   
                       if (node === secondHoveredNode || node === localStorage.getItem('clickedNode') || graph.neighbors(hoveredNode).includes(node)) {
                         newData.highlighted = true;
                       } else {
                       }
-                  }
-                   
+                  }                  
                 }
-              
             }
             return newData;
-          },
-          
+          },          
         });
     }, [secondHoveredNode])
 
@@ -199,10 +197,37 @@ function App() {
         },
       });
     }, [hoveredNode]);
+
+    useEffect(() => {
+      if(localStorage.getItem('clickedNode') !== 'null' && localStorage.getItem('secondHoveredNode') !== 'null'){
+        console.log("testing collab");
+        console.log(localStorage.getItem('clickedNode'));
+        console.log(localStorage.getItem('secondHoveredNode'));
+  
+  
+        for (let key in movieCollabGroups) {
+          //console.log(key + ' has ' + movieCollabGroups[key])
+          //console.log(localStorage.getItem('clickedNode'));
+          //console.log(localStorage.getItem('secondHoveredNode'));
+      
+          if(movieCollabGroups[key].includes(localStorage.getItem('clickedNode')) && movieCollabGroups[key].includes(localStorage.getItem('secondHoveredNode'))){
+              console.log(key);
+          }
+        }
+      }
+    }, [secondHoveredNode])
   
     return null;
   }
 
+  let movieCollabGroups = require('./movieCollabGroups.json');
+  //movieCollabGroups = JSON.parse(movieCollabGroups);
+
+  //console.log(movieCollabGroups);
+
+  
+
+  
 
   return (
     <div>
