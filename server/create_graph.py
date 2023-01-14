@@ -1,20 +1,34 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.readwrite import json_graph
+import json
 
+# Opening JSON file
+f = open('uniqueActors.json')
+  
+# returns JSON object as 
+# a dictionary
+data = json.load(f)
+
+#print(data)
 
 G = nx.Graph()
-G.add_nodes_from(["a", "b"])
-G.add_edge("a", "b")
-nx.draw_networkx(G)
+G.add_nodes_from(data)
+
+options = {
+    'node_color': range(311),
+    'cmap':plt.cm.colors,
+    'node_size': 50,
+    'linewidths': 0,
+    'width': 0.1,
+    'with_labels':False
+}
+
+nx.draw_random(G, **options)
 plt.savefig("graph.pdf")
 plt.savefig("graph.png")
 plt.savefig("graph.svg")
-G = nx.path_graph(4)
 
-
-#DG = nx.DiGraph()
-#DG.add_edge('a', 'b')
 print(json_graph.node_link_data(G))
 
 
