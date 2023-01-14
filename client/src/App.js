@@ -3,14 +3,18 @@ import logo from './logo.svg';
 import React, { useState } from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import './App.css';
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import Graph from "graphology";
 import { SigmaContainer, useLoadGraph } from "@react-sigma/core";
 import "@react-sigma/core/lib/react-sigma.min.css";
 import getNodeProgramImage from "sigma/rendering/webgl/programs/node.image";
 import {ControlsContainer, ZoomControl, FullScreenControl, SearchControl } from "@react-sigma/core";
 import { LayoutForceAtlas2Control } from "@react-sigma/layout-forceatlas2";
-import jsonGraph from "./test.json";
+import jsonGraphExample from "./test.json";
+import testJsonGraphFromGexf from "./testoutput.json";
+import newTestJson from "./newTestJson.json";
+import { parse } from "graphology-gexf/browser";
+import {GraphFormatConverter} from "graph-format-converter";
 
 export const LoadGraph = () => {
   const loadGraph = useLoadGraph();
@@ -19,6 +23,7 @@ export const LoadGraph = () => {
     const graph = new Graph();
     graph.addNode("first", { x: 0, y: 0, size: 15, label: "Leonardo DiCaprio", color: "#FA4F40" });
     loadGraph(graph);
+
   }, [loadGraph]);
 
   return null;
@@ -52,7 +57,29 @@ function App() {
     }
   };
 
-  const graph = Graph.from(jsonGraph);
+  /*
+  const [graph, setGraph] = useState(0);
+
+  useLayoutEffect(() => {
+    fetch("./test.gexf")
+      .then((res) => res.text())
+      .then((gexf) => {
+        setGraph(parse(Graph, gexf))
+        console.log(graph)
+      })
+
+  }, []);
+  */
+
+  //const graph = Graph.from(jsonGraphExample);
+  
+  //const graph = {"nodes":[{"id":"0","label":"0"},{"id":"1","label":"1"},{"id":"2","label":"2"},{"id":"3","label":"3"}],"edges":[{"id":"0","type":"undirected","label":"","source":"0","target":"1","weight":1},{"id":"1","type":"undirected","label":"","source":"1","target":"2","weight":1},{"id":"2","type":"undirected","label":"","source":"2","target":"3","weight":1}]}
+
+  //const graph = GraphFormatConverter.fromJson(jsonGraph);
+
+  //fixNG = json_graph.node_link_data(NG)
+
+  const graph = Graph.from(newTestJson);
 
   return (
     <div>

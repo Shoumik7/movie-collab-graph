@@ -5,6 +5,7 @@
     "axios": "^1.2.2",
     "concurrently": "^7.6.0",
     "cors": "^2.8.5",
+    "graph-format-converter": "^1.6.2",
     "graphology": "^0.25.1",
     "graphology-gexf": "^0.10.3",
     "graphology-types": "^0.24.7",
