@@ -14,7 +14,6 @@ import jsonGraphExample from "./test.json";
 import testJsonGraphFromGexf from "./testoutput.json";
 import newTestJson from "./newTestJson.json";
 import { parse } from "graphology-gexf/browser";
-import {GraphFormatConverter} from "graph-format-converter";
 
 export const LoadGraph = () => {
   const loadGraph = useLoadGraph();
