@@ -47,6 +47,7 @@ function App() {
     </li>
   );
 
+  /*
   const handleClick = async () => {
     setIsLoading(true);
     try {
@@ -69,6 +70,7 @@ function App() {
       setIsLoading(false);
     }
   };
+  */
 
   /*
   const [graph, setGraph] = useState(0);
@@ -246,30 +248,15 @@ function App() {
   
     return null;
   }
-
-  let movieCollabGroups = require('./movieCollabGroups.json');
-  //movieCollabGroups = JSON.parse(movieCollabGroups);
-
-  //console.log(movieCollabGroups);
-
   
 
   
 
   return (
     <div>
-      <div>
-        {err && <h2>{err}</h2>}
-        <button onClick={handleClick}>Fetch data</button>
-        {isLoading && <h2>Loading...</h2>}
-      </div>
-      <div>
-        <p>{movieData}</p>
-      </div>
-
       <SigmaContainer
         graph={graph}
-        style={{ height: "750px" }}
+        style={{ height: "790px" }}
         settings={{
           nodeProgramClasses: { image: getNodeProgramImage() },
           defaultNodeType: "image",
