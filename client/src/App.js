@@ -322,7 +322,7 @@ function App() {
         <GraphEvents />
         
         <ControlsContainer style={{ marginLeft: "10px", marginTop: "10px"}} position={"top-left"}>
-          <SearchControl />
+          <SearchControl style={{width:320}}/>
         </ControlsContainer>
         <ControlsContainer style={{ border: "0px", marginLeft: "130px", marginTop: "95px"}} position={"top-left"}>
 
