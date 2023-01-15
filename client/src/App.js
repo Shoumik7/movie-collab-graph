@@ -50,6 +50,7 @@ function App() {
     </li>
   );
 
+  React.us
 
   const graph = Graph.from(testJson);
 
@@ -58,7 +59,6 @@ function App() {
   const [hoveredNeighbors, setHoveredNeighbors] = useState([]);
 
   const SearchBar = () => {
-    //const { gotoNode } = useCamera();
     // Search value
     const [search, setSearch] = useState("");
     // Datalist values
@@ -68,12 +68,6 @@ function App() {
     // random id for the input
     const [inputId, setInputId] = useState("");
 
-  /**
-   * When component mount, we set a random input id.
-   */
-  useEffect(() => {
-    setInputId(`search-${0}`);
-  }, []);
 
   /**
    * When the search input changes, recompute the autocomplete values.
@@ -327,7 +321,7 @@ function App() {
           <SearchBar />
         </ControlsContainer>
         <ControlsContainer style={{ border: "0px", marginLeft: "130px", marginTop: "95px"}} position={"top-left"}>
-          
+
         </ControlsContainer>
       </SigmaContainer>
 
