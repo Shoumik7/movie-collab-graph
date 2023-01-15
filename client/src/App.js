@@ -43,8 +43,8 @@ function App() {
   const [addedCollab, setAddedCollab] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
 
-  let [movieArr, setMovieArr] = useState([]);
-  const movieItems = movieArr.map((movie) =>
+  const [movieArr, setMovieArr] = useState([]);
+  let movieItems = movieArr.map((movie) =>
     <li key={movie.toString()}>
       {movie}
     </li>
@@ -179,10 +179,7 @@ function App() {
             setHoveredNode(null);
             localStorage.setItem('secondHoveredNode', null);
 
-            
           } 
-
-          
         },
         clickNode: event => {
           if(localStorage.getItem('clickedNode') === event.node){
@@ -266,25 +263,33 @@ function App() {
     //movieCollabGroups = JSON.parse(movieCollabGroups);
     //console.log(movieCollabGroups)
 
+    
+
     useEffect(() => {
       if(localStorage.getItem('clickedNode') !== 'null' && localStorage.getItem('secondHoveredNode') !== 'null'){
         //console.log("testing collab");
         //console.log(localStorage.getItem('clickedNode'));
         //console.log(localStorage.getItem('secondHoveredNode'));
-  
         //let counter = 0;
+        let tempMovieArr = [];
+        
         for (let key in movieCollabGroups) {
-          //console.log(key + ' has ' + movieCollabGroups[key])
-          //console.log(localStorage.getItem('clickedNode'));
-          //console.log(localStorage.getItem('secondHoveredNode'));
-          //console.log(counter);
-          //counter++;
-      
+          //console.log(key + ' has ' + movieCollabGroups[key])      
           //movie that is shared between clicked and second hovered is stored in key
+
           if(movieCollabGroups[key].includes(localStorage.getItem('clickedNode')) && movieCollabGroups[key].includes(localStorage.getItem('secondHoveredNode'))){
               //console.log("done");
               console.log(key);
+              tempMovieArr.push(key);
+              setMovieArr(tempMovieArr)
               //key is the movie that both the clickedNode actor and secondHoveredNode actor were in
+
+                movieItems = movieArr;
+                movieArr.map((movie) =>
+                  <li key={movie.toString()}>
+                    {movie}
+                  </li>
+                );
           }
         }
       }
