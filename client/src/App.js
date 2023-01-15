@@ -217,10 +217,7 @@ function App() {
 
     let movieCollabGroups = require('./movieCollabGroups.json');
     //movieCollabGroups = JSON.parse(movieCollabGroups);
-
-    console.log(movieCollabGroups)
-
-
+    //console.log(movieCollabGroups)
 
     useEffect(() => {
       if(localStorage.getItem('clickedNode') !== 'null' && localStorage.getItem('secondHoveredNode') !== 'null'){
@@ -247,10 +244,7 @@ function App() {
     }, [secondHoveredNode])
   
     return null;
-  }
-  
-
-  
+  }  
 
   return (
     <div>
