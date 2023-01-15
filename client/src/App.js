@@ -42,6 +42,7 @@ function App() {
   const [err, setErr] = useState('');
   const [addedCollab, setAddedCollab] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [searchResTitle, setSearchResTitle] = useState("")
 
   const [movieArr, setMovieArr] = useState([]);
   let movieItems = movieArr.map((movie) =>
@@ -50,7 +51,6 @@ function App() {
     </li>
   );
 
-  React.us
 
   const graph = Graph.from(testJson);
 
@@ -215,6 +215,7 @@ function App() {
                     
                       if (node === secondHoveredNode || node === localStorage.getItem('clickedNode') || graph.neighbors(hoveredNode).includes(node)) {
                         newData.highlighted = true;
+                        setShowWelcome(false);
                       } else {
                       }
                   }
@@ -282,6 +283,7 @@ function App() {
               console.log(key);
               tempMovieArr.push(key);
               setMovieArr(tempMovieArr)
+              setSearchResTitle("Collaborations between " + localStorage.getItem('clickedNode') + " and " + localStorage.getItem('secondHoveredNode') + ":")
               //key is the movie that both the clickedNode actor and secondHoveredNode actor were in
 
                 movieItems = movieArr;
@@ -320,10 +322,7 @@ function App() {
         <GraphEvents />
         
         <ControlsContainer style={{ marginLeft: "10px", marginTop: "10px"}} position={"top-left"}>
-          <SearchBar />
-        </ControlsContainer>
-        <ControlsContainer style={{ marginLeft: "10px", marginTop: "55px"}} position={"top-left"}>
-          <SearchBar />
+          <SearchControl />
         </ControlsContainer>
         <ControlsContainer style={{ border: "0px", marginLeft: "130px", marginTop: "95px"}} position={"top-left"}>
 
@@ -332,12 +331,17 @@ function App() {
 
       <Drawer variant="permanent" hideBackdrop anchor = 'right' open>
         <Box
-          sx={{ width: 400 }}
+          sx={{ width: 350, margin: "20px" }}
           role="presentation"   
         >
+          {showWelcome && <img height="200px" width="200px" id="logo" src={require("./images/moviecollabsfirstlogo.png")}/>}
           <ul>
-            {showWelcome && <h1 margin="10px">Welcome to Movie Collabs!</h1> }
-            {movieItems}
+            {showWelcome && <div><h1 margin="10px">Welcome to Movie Collabs!</h1>
+              <p>Observe and enjoy the collaborations of your favorite actors in the peak of their film-making. Or just enjoy the pretty colors.</p>
+              <p>Click on one node and hover over another to see the movies that they have starred in together.</p>
+              </div> }
+              {!showWelcome && <h1>{searchResTitle}</h1>}
+              {movieItems}
           </ul>
         </Box>
       </Drawer>
