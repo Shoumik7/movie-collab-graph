@@ -21,6 +21,7 @@ G.add_nodes_from(actors)
 
 for key in collab_groups:
     nodes = collab_groups[key]
+
     edges = combinations(nodes, 2)
     G.add_edges_from(edges)
 

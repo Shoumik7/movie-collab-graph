@@ -66,7 +66,7 @@ let topMovieIds = [];
     //Popularity filter for people
 
     //Get the lead actors of the top x movies
-    for(let i = 1; i <= 50; i++){
+    for(let i = 1; i <= 60; i++){
         for(let j = 0; j <= 19; j++){
             currMovieId = await getTopRatedMovieId("https://api.themoviedb.org/3/movie/top_rated?api_key=" + apiKey + "&language=en-US&page=" + i, j);
             console.log(currMovieId);
@@ -74,14 +74,16 @@ let topMovieIds = [];
             if(currMovieId != null && currMovieId != undefined){
                 for(let k = 0; k < 2; k++){
                     currTopActor = await getTopActorFromMovie("https://api.themoviedb.org/3/movie/" + currMovieId + "/credits?api_key=" + apiKey + "&language=en-US", k);
-                }
-            }
-
-            let popularity = await getPopularity("https://api.themoviedb.org/3/person/" + currMovieActorId + "?api_key=" + apiKey + "&language=en-US");
+                
+                    let popularity = await getPopularity("https://api.themoviedb.org/3/person/" + currMovieActorId + "?api_key=" + apiKey + "&language=en-US");
             
-            if(popularity > 10){
-                allActors.push(currTopActor);
-            }  
+                    if(popularity > 10){
+                        allActors.push(currTopActor);
+                    }      
+                }
+
+            }
+            
 
         }
     }
