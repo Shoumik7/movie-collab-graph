@@ -1,8 +1,5 @@
 {
   "dependencies": {
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
-    "@mui/material": "^5.11.4",
     "@react-sigma/core": "^3.1.0",
     "@react-sigma/layout-forceatlas2": "^3.1.0",
     "axios": "^1.2.2",
@@ -17,7 +14,6 @@
     "graphology-types": "^0.24.7",
     "i": "^0.3.7",
     "lodash": "^4.17.21",
-    "mui": "^0.0.1",
     "npm": "^9.3.0",
     "react-router-dom": "^6.6.2",
     "react-scripts": "^5.0.1",
