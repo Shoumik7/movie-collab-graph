@@ -19,6 +19,8 @@
     "lodash": "^4.17.21",
     "mui": "^0.0.1",
     "npm": "^9.3.0",
+    "react-native": "^0.71.0",
+    "react-native-web": "^0.18.10",
     "react-router-dom": "^6.6.2",
     "react-scripts": "^5.0.1",
     "react-sigma": "^1.2.35",

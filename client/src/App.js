@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import React, { useState } from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import './App.css';
+import { Button, StyleSheet, View } from 'react-native'
 import { useEffect, useLayoutEffect } from "react";
 import Graph from "graphology";
 import { SigmaContainer, useLoadGraph } from "@react-sigma/core";
@@ -15,8 +16,8 @@ import testJsonGraphFromGexf from "./testoutput.json";
 import newTestJson from "./newTestJson.json";
 import { parse } from "graphology-gexf/browser";
 import { useRegisterEvents, useSetSettings, useSigma } from "@react-sigma/core";
+import  AddCollabButton from "./components/AddCollabButton"
 import { FC } from "react";
-import Button, { ButtonProps } from '@mui/material/Button';
 import { Drawer, Box } from '@mui/material';
 
 
@@ -34,6 +35,7 @@ export const LoadGraph = () => {
 };
 
 function App() {
+
 
   localStorage.setItem('clickedNode', null)
 
@@ -282,6 +284,11 @@ function App() {
               console.log(key);
               tempMovieArr.push(key);
               setMovieArr(tempMovieArr)
+<<<<<<< Updated upstream
+=======
+              setShowWelcome(false);
+              setSearchResTitle("Collaborations between " + localStorage.getItem('clickedNode') + " and " + localStorage.getItem('secondHoveredNode') + ":")
+>>>>>>> Stashed changes
               //key is the movie that both the clickedNode actor and secondHoveredNode actor were in
 
                 movieItems = movieArr;
@@ -325,11 +332,16 @@ function App() {
         <ControlsContainer style={{ marginLeft: "10px", marginTop: "55px"}} position={"top-left"}>
           <SearchBar />
         </ControlsContainer>
-        <ControlsContainer style={{ border: "0px", marginLeft: "130px", marginTop: "95px"}} position={"top-left"}>
-
+        <ControlsContainer style={{ marginLeft: "10px", marginTop: "55px"}} position={"top-left"}>
+            <SearchControl />
+        </ControlsContainer >
+        <ControlsContainer style={{ border: "0px", marginLeft: "130px", marginTop: "75px"}} position={"top-left"}>
+          <AddCollabButton></AddCollabButton>
         </ControlsContainer>
       </SigmaContainer>
+      <div >
 
+<<<<<<< Updated upstream
       <Drawer variant="permanent" hideBackdrop anchor = 'right' open>
         <Box
           sx={{ width: 400 }}
@@ -341,6 +353,9 @@ function App() {
           </ul>
         </Box>
       </Drawer>
+=======
+      </div>
+>>>>>>> Stashed changes
         
     </div>
   );
