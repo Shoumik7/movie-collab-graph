@@ -2,8 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View, Keyboard, Butto, TouchableOpacity } from "react-native";
 
-function AddCollabButton(props) {
-
+function XButton(props){
   const [isHover, setIsHover] = useState(false);
 
   const onMouseEnter = () => setIsHover(true)
@@ -22,9 +21,11 @@ function AddCollabButton(props) {
       paddingVertical: 10,
       paddingHorizontal: 12,
       positionLeft: "20px",
-      width: "50%",
+      width: "32px",
       height: "29px",
       display: "flex",
+      marginTop: "5px",
+      marginLeft: "15px"
     },
     appButtonText: {
       fontSize: 12,
@@ -56,7 +57,6 @@ function AddCollabButton(props) {
       >
         <View style={styles.textContainer}>
           <Text style={styles.appButtonText}>{title}</Text>
-          <Text style={styles.appButtonPlus}>+</Text>
         </View>
       </TouchableOpacity>
     );
@@ -66,8 +66,9 @@ function AddCollabButton(props) {
 // styles
 
   return (
-    <CollabButton onPress={props.onPress} title="ADD COLLABORATION " />
+    <CollabButton onPress={props.onPress} title="X" />
   );
+
 }
 
-export default AddCollabButton;
+export default XButton;

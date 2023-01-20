@@ -16,9 +16,10 @@ import testJsonGraphFromGexf from "./testoutput.json";
 import newTestJson from "./newTestJson.json";
 import { parse } from "graphology-gexf/browser";
 import { useRegisterEvents, useSetSettings, useSigma } from "@react-sigma/core";
-import  AddCollabButton from "./components/AddCollabButton"
+import AddCollabButton from "./components/AddCollabButton"
+import XButton from "./components/XButton"
 import { FC } from "react";
-import { Drawer, Box } from '@mui/material';
+import { Drawer, Box, Stack } from '@mui/material';
 
 
 export const LoadGraph = () => {
@@ -45,14 +46,15 @@ function App() {
   const [addedCollab, setAddedCollab] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
 
+  const onAddCollabPress = () => setAddedCollab(true)
+  const onXPress = () => setAddedCollab(false)
+
   const [movieArr, setMovieArr] = useState([]);
   let movieItems = movieArr.map((movie) =>
     <li key={movie.toString()}>
       {movie}
     </li>
   );
-
-  React.us
 
   const graph = Graph.from(testJson);
 
@@ -120,9 +122,8 @@ function App() {
   };
 
   // Common html props for the div
-
   return (
-    <div style={{ width: "200px"}}>
+    <div style={{ width: "85%", display: "flex", flexDirection: "row", alignItems: "center", marginLeft: "-65px" }}>
       <label htmlFor={inputId} style={{ display: "none" }}>
           Search a node
         </label>
@@ -133,8 +134,19 @@ function App() {
           list={`${inputId}-datalist`}
           value={search}
           onChange={onInputChange}
-          style={{width: "190px"}}
+          style={{width: "100%",
+            height: "2.4rem",
+            background: "#f5f5f5",
+            outline: "none",
+            border: "none",
+            borderRadius: "30px",
+            padding: "0 3.5rem 0 1.5rem",
+            fontSize: "1rem"}}
         />
+        <button style={{ width: "3.5rem", height: "2.8rem", marginLeft: "-3.5rem", background: "none", border: "none", outline: "none"}} >
+          <svg style={{width: "24px", height: "24px" }}viewBox="0 0 24 24"><path fill="#666666" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+          </svg>
+        </button>
         <datalist id={`${inputId}-datalist`}>
           {values.map((value) => (
             <option key={value.id} value={value.label}>
@@ -144,6 +156,7 @@ function App() {
         </datalist>
       </div>
     );
+  
   };
 
   const GraphEvents =  () => {
@@ -284,11 +297,6 @@ function App() {
               console.log(key);
               tempMovieArr.push(key);
               setMovieArr(tempMovieArr)
-<<<<<<< Updated upstream
-=======
-              setShowWelcome(false);
-              setSearchResTitle("Collaborations between " + localStorage.getItem('clickedNode') + " and " + localStorage.getItem('secondHoveredNode') + ":")
->>>>>>> Stashed changes
               //key is the movie that both the clickedNode actor and secondHoveredNode actor were in
 
                 movieItems = movieArr;
@@ -326,39 +334,39 @@ function App() {
       >
         <GraphEvents />
         
-        <ControlsContainer style={{ marginLeft: "10px", marginTop: "10px"}} position={"top-left"}>
-          <SearchBar />
-        </ControlsContainer>
-        <ControlsContainer style={{ marginLeft: "10px", marginTop: "55px"}} position={"top-left"}>
-          <SearchBar />
-        </ControlsContainer>
-        <ControlsContainer style={{ marginLeft: "10px", marginTop: "55px"}} position={"top-left"}>
-            <SearchControl />
-        </ControlsContainer >
-        <ControlsContainer style={{ border: "0px", marginLeft: "130px", marginTop: "75px"}} position={"top-left"}>
-          <AddCollabButton></AddCollabButton>
+        <ControlsContainer style={{ backgroundColor: "#fff0", width: "350px", border: "0", marginLeft: "70px", marginTop: "6px"}} position={"top-left"}>
+          <Stack spacing={1}>
+            <SearchBar />
+            {addedCollab && <Stack direction="row">
+              <SearchBar />
+              <XButton onPress={onXPress} />
+            </Stack>}
+            {!addedCollab && <AddCollabButton onPress={onAddCollabPress} />}
+            <div style={{ marginLeft: "", borderRadius: "20px", width: "50%", height: "280px", backgroundColor: "#969696"}}>
+              <img style={{ borderRadius: "15px", marginLeft: "35px", marginTop: "19px", height: "125px", width: "100px" }} src="https://cdn.britannica.com/32/201632-050-66971649/actress-Margot-Robbie-Australian-2018.jpg"></img>
+              <h3><center>Margot Robbiniapolis</center></h3>
+              <p><center>Influence Rank: 23/10</center></p>
+            </div>
+            {addedCollab && <div style={{ marginLeft: "", borderRadius: "20px", width: "50%", height: "280px", backgroundColor: "#969696"}}>
+              <img style={{ borderRadius: "15px", marginLeft: "35px", marginTop: "10px", height: "125px", width: "100px" }} src="https://cdn.britannica.com/32/201632-050-66971649/actress-Margot-Robbie-Australian-2018.jpg"></img>
+              <h3><center>Margot Robbiniapolis</center></h3>
+              <p><center>Influence Rank: 23/10</center></p>
+            </div>}
+          </Stack>
         </ControlsContainer>
       </SigmaContainer>
-      <div >
-
-<<<<<<< Updated upstream
-      <Drawer variant="permanent" hideBackdrop anchor = 'right' open>
-        <Box
-          sx={{ width: 400 }}
-          role="presentation"   
-        >
-          <ul>
-            {showWelcome && <h1 margin="10px">Welcome to Movie Collabs!</h1> }
-            {movieItems}
-          </ul>
-        </Box>
-      </Drawer>
-=======
-      </div>
->>>>>>> Stashed changes
-        
-    </div>
-  );
+        <Drawer variant="permanent" hideBackdrop anchor = 'right' open>
+          <Box
+            sx={{ width: 400 }}
+            role="presentation"   
+          >
+            <ul>
+              {showWelcome && <h1 margin="10px">Welcome to Movie Collabs!</h1> }
+              {movieItems}
+            </ul>
+          </Box>
+        </Drawer>    
+      </div>);
 }
 
 export default App;
