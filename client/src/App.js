@@ -110,7 +110,7 @@ function App() {
         <input
           id={inputId}
           type="text"
-          placeholder={localStorage.getItem('clickedNode') !== 'null' ? localStorage.getItem('clickedNode') : "Search for actors and directors..."}
+          placeholder={localStorage.getItem('clickedNode') !== 'null' ? localStorage.getItem('clickedNode') : "Search for an actor or director"}
           list={`${inputId}-datalist`}
           value={search}
           onChange={onInputChange}
@@ -208,7 +208,7 @@ function App() {
         <input
           id={inputId}
           type="text"
-          placeholder={localStorage.getItem('secondClickedNode') !== 'null' ? localStorage.getItem('secondClickedNode') : "Search for actors and directors..."}
+          placeholder={localStorage.getItem('secondClickedNode') !== 'null' ? localStorage.getItem('secondClickedNode') : "Search for a collaborator"}
           list={`${inputId}-datalist`}
           value={search}
           onChange={onInputChange}
@@ -242,6 +242,8 @@ function App() {
   const [clickedNode, setClickedNode] = useState(null);
   const [secondClickedNode, setSecondClickedNode] = useState(null);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [showBioOne, setShowBioOne] = useState(false);
+  const [showBioTwo, setShowBioTwo] = useState(false);
 
   const GraphEvents =  () => {
     const sigma = useSigma();
@@ -296,6 +298,7 @@ function App() {
               localStorage.setItem('secondHoveredNode', null);
               setSecondClickedNode(event.node);
               setSecondHoveredNode(null);
+              setAddedCollab(true);
             }
           }
           console.log("Click");
@@ -311,6 +314,7 @@ function App() {
           setHoveredNode(null);
           setSecondClickedNode(null);
           setSecondHoveredNode(null);
+          setAddedCollab(false);
           console.log("Stage");
           console.log("cN: " + localStorage.getItem('clickedNode') + " sCN: " + localStorage.getItem('secondClickedNode') + 
           " hN: " + localStorage.getItem('hoveredNode') + " sHN: " + localStorage.getItem('secondHoveredNode'));
@@ -324,6 +328,7 @@ function App() {
             const graph = sigma.getGraph();
             const newData = { ...data, highlighted: data.highlighted || false };
             if (hoveredNode) {
+              setShowWelcome(false);
               if (node === hoveredNode) {
                 newData.highlighted = true;
               }
@@ -379,72 +384,32 @@ function App() {
             return newData;
           },
         });
-    }, [hoveredNode, secondHoveredNode, clickedNode, secondClickedNode])
-  
-    /*useEffect(() => {
-      setSettings({
-        nodeReducer: (node, data) => {
-          const graph = sigma.getGraph();
-          const newData = { ...data, highlighted: data.highlighted || false };
-  
-          if (hoveredNode) {
-            if (node === hoveredNode || graph.neighbors(hoveredNode).includes(node)) {
-              newData.highlighted = true;
-            } else {
-              newData.color = "#E2E2E2";
-              newData.highlighted = false;
+        /*if (clickedNode !== 'null' && secondClickedNode !== 'null') {
+          let tempMovieArr = [];
+          for (let key in movieCollabGroups) {
+            //console.log(key + ' has ' + movieCollabGroups[key])      
+            //movie that is shared between clicked and second hovered is stored in key
+            if(movieCollabGroups[key].includes(localStorage.getItem('clickedNode')) && movieCollabGroups[key].includes(localStorage.getItem('secondClickedNode'))){
+              tempMovieArr.push(key);
+              setMovieArr(tempMovieArr);
+              //key is the movie that both the clickedNode actor and secondHoveredNode actor were in
+              movieItems = movieArr;
+              movieArr.map((movie) =>
+                <li key={movie.toString()}>
+                  {movie}
+                </li>
+              );
             }
           }
-          return newData;
-        },
-        edgeReducer: (edge, data) => {
-          const graph = sigma.getGraph();
-          const newData = { ...data, hidden: false };
+        }*/
+    }, [hoveredNode, secondHoveredNode, clickedNode, secondClickedNode]);
   
-          if (hoveredNode && !graph.extremities(edge).includes(hoveredNode)) {
-            newData.hidden = true;
-          }
-          return newData;
-        },
-      });
-    }, [hoveredNode]);
-
     let movieCollabGroups = require('./movieCollabGroups.json');
-    //movieCollabGroups = JSON.parse(movieCollabGroups);
-    //console.log(movieCollabGroups)
 
-    
+    /*useEffect(() => {
+     
+    }, [secondHoveredNode]);*/
 
-    useEffect(() => {
-      if(localStorage.getItem('clickedNode') !== 'null' && localStorage.getItem('secondHoveredNode') !== 'null'){
-        //console.log("testing collab");
-        //console.log(localStorage.getItem('clickedNode'));
-        //console.log(localStorage.getItem('secondHoveredNode'));
-        //let counter = 0;
-        let tempMovieArr = [];
-        
-        for (let key in movieCollabGroups) {
-          //console.log(key + ' has ' + movieCollabGroups[key])      
-          //movie that is shared between clicked and second hovered is stored in key
-
-          if(movieCollabGroups[key].includes(localStorage.getItem('clickedNode')) && movieCollabGroups[key].includes(localStorage.getItem('secondHoveredNode'))){
-              //console.log("done");
-              console.log(key);
-              tempMovieArr.push(key);
-              setMovieArr(tempMovieArr)
-              //key is the movie that both the clickedNode actor and secondHoveredNode actor were in
-
-                movieItems = movieArr;
-                movieArr.map((movie) =>
-                  <li key={movie.toString()}>
-                    {movie}
-                  </li>
-                );
-          }
-        }
-      }
-    }, [secondHoveredNode])*/
-  
     return null;
   }
 
